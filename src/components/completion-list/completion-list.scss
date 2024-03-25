@@ -1,0 +1,19 @@
+.completion-wrapper {
+    h2 {
+        color: #ffffff;
+        margin: 24px 24px 24px 0;
+    }
+    .completed {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        margin: 24px;
+        div {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+    }
+}

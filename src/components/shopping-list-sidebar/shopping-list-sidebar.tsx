@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
+import './shopping-list-sidebar.scss';
 
 interface ShoppingListSidebarProps {
     onAddItem: (item: string) => void;
@@ -19,10 +22,10 @@ const ShoppingListSidebar: React.FC<ShoppingListSidebarProps> = ({ onAddItem }) 
     };
 
     return (
-        <div>
-            <h2>Shopping List Sidebar</h2>
-            <input type="text" value={item} onChange={handleInputChange} />
-            <button onClick={handleAddItem}>Add Item</button>
+        <div className='sidebar'>
+            <h1>Shopping List</h1>
+            <Input color="primary" type="text" value={item} onChange={handleInputChange} />
+            <Button variant="contained" onClick={handleAddItem}>Add Item</Button>
         </div>
     );
 };

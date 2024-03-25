@@ -1,4 +1,7 @@
 import React from 'react';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import './completion-list.scss';
 
 interface CompletionListComponentProps {
     completedItems: string[];
@@ -11,16 +14,15 @@ const CompletionListComponent: React.FC<CompletionListComponentProps> = ({ compl
     };
 
     return (
-        <div>
-            <h2>Completed Items</h2>
-            <ul>
+        <div className="completion-wrapper">
+            <div className='completed'>
                 {completedItems.map((item, index) => (
-                    <li key={index}>
+                    <Card key={index}>
                         {item}
-                        <button onClick={() => handleActivateItem(item)}>Activate</button>
-                    </li>
+                        <Button variant="contained" onClick={() => handleActivateItem(item)}>Activate</Button>
+                    </Card>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };

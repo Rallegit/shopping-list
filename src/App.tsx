@@ -1,32 +1,31 @@
-import './App.css';
+import './App.scss';
 import React, { useState } from 'react';
-import ShoppingList from './components/shopping-list/shopping-list';
 import ShoppingListSidebar from './components/shopping-list-sidebar/shopping-list-sidebar';
-import { ShoppingList as ShoppingListItem } from './interfaces/list'; // Import the ShoppingList interface
+import { ShoppingList as ShoppingListItem } from './interfaces/list';
 import ShoppingListComponent from './components/shopping-list/shopping-list';
 import CompletionListComponent from './components/completion-list/completion-list';
+import Snackbar from '@mui/material/Snackbar';
+import Dialog from '@mui/material/Dialog';
+import Button from '@mui/material/Button';
 
 function App() {
-  // State to manage the shopping list items
   const [shoppingItems, setShoppingItems] = useState<ShoppingListItem[]>([]);
   const [completedItems, setCompletedItems] = useState<string[]>([]);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [itemIdToRemove, setItemIdToRemove] = useState<number | null>(null);
 
-  // Function to handle adding items to the shopping list
   const handleAddItemToList = (itemName: string) => {
     console.log(`Adding item to the list: ${itemName}`)
-    // Create a new ShoppingListItem object
     const newItem: ShoppingListItem = {
-      completed: false, // Assuming it's not completed by default
-      id: shoppingItems.length + 1, // Assigning a unique ID (you might want to generate unique IDs differently)
+      completed: false,
+      id: shoppingItems.length + 1,
       name: itemName,
-      quantity: 1 // Assuming a default quantity of 1 for now
+      quantity: 1
     };
     
-    // Add the new item to the shopping list
     setShoppingItems(prevItems => [...prevItems, newItem]);
   };
 
-  // Function to handle increasing the quantity of items
   const handleIncreaseQuantity = (itemId: number) => {
     setShoppingItems(prevItems =>
       prevItems.map(item =>
@@ -36,22 +35,27 @@ function App() {
   };
 
   const handleDecreaseQuantity = (itemId: number) => {
-    setShoppingItems(prevItems =>
-      prevItems.map(item =>
-        item.id === itemId ? { ...item, quantity: item.quantity - 1 } : item
-      )
-      .filter(item => item.quantity > 0)
-    );
-  }
+    const item = shoppingItems.find(item => item.id === itemId);
+    if (item && item.quantity === 1) {
+      setOpenDialog(true);
+      setItemIdToRemove(itemId);
+    } else {
+      setShoppingItems(prevItems =>
+        prevItems.map(item =>
+          item.id === itemId ? { ...item, quantity: item.quantity - 1 } : item
+        )
+      );
+    }
+  };
 
   const removeItem = (itemId: number) => {
     setShoppingItems(prevItems =>
       prevItems.filter(item => item.id !== itemId)
     );
+    setOpenDialog(false);
   }
 
   const handleCompleteItem = (itemId: number, itemName: string) => {
-    // Mark the item as completed and remove it from shoppingItems
     setCompletedItems(prevCompletedItems => [...prevCompletedItems, itemName]);
     setShoppingItems(prevItems =>
       prevItems.filter(item => item.id !== itemId)
@@ -59,38 +63,47 @@ function App() {
   };
 
   const handleActivateItem = (itemName: string) => {
-    // Remove the item from the completedItems list
     setCompletedItems(prevItems => prevItems.filter(item => item !== itemName));
-    
-    // Create a new ShoppingList object for the activated item
+
     const activatedItem: ShoppingListItem = {
-      id: shoppingItems.length + 1, // Assuming you have a function to generate unique IDs
+      id: shoppingItems.length + 1,
       name: itemName,
       quantity: 1,
       completed: false
     };
-  
-    // Add the item back to the shoppingItems list
     setShoppingItems(prevItems => [...prevItems, activatedItem]);
   };
 
   return (
     <div className="wrapper">
-      <div className="shopping-list-sidebar">
-        {/* Pass the handleAddItemToList function as the onAddItem prop */}
+      <div className="shopping-sidebar">
         <ShoppingListSidebar onAddItem={handleAddItemToList} />
       </div>
-      <div className="shopping-list">
-        <ShoppingListComponent
-          items = {shoppingItems} 
-          onIncreaseQuantity = {handleIncreaseQuantity} 
-          onDecreaseQuantity = {handleDecreaseQuantity}
-          onRemoveItem = {removeItem}
-          onCompleteItem={handleCompleteItem}
-        />
-      </div>
-      <div className="completion-list">
-        <CompletionListComponent completedItems={completedItems} onActivateItem={handleActivateItem} />
+      <div className='shopping-wrapper'>
+        <div className="shopping-list">
+          <ShoppingListComponent
+            items={shoppingItems}
+            onIncreaseQuantity={handleIncreaseQuantity}
+            onDecreaseQuantity={handleDecreaseQuantity}
+            onRemoveItem={removeItem}
+            onCompleteItem={handleCompleteItem}
+          />
+        </div>
+        {completedItems.length > 0 && (
+          <div className="completion-list">
+            <CompletionListComponent
+              completedItems={completedItems}
+              onActivateItem={handleActivateItem}
+            />
+          </div>
+        )}
+        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <div>
+          <p>Decreasing quantity below 0 will remove the item. Are you sure?</p>
+          <Button onClick={() => removeItem(itemIdToRemove!)}>Yes</Button>
+          <Button onClick={() => setOpenDialog(false)}>No</Button>
+        </div>
+      </Dialog>
       </div>
     </div>
   );

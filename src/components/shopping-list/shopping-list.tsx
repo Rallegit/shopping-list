@@ -1,5 +1,9 @@
 import React from 'react';
 import { ShoppingList } from '../../interfaces/list';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import Card from '@mui/material/Card';
+import './shopping-list.scss';
 
 interface ShoppingListComponentProps {
     items: ShoppingList[];
@@ -11,28 +15,25 @@ interface ShoppingListComponentProps {
 
 const ShoppingListComponent: React.FC<ShoppingListComponentProps> = ({ items, onIncreaseQuantity, onDecreaseQuantity, onRemoveItem, onCompleteItem }) => {
     return (
-        <div>
-            <h2>Shopping List</h2>
-            <ul>
-                {items.map((item) => (
-                    <li key={item.id}>
-                        <div>
-                            <strong>Name:</strong> {item.name}
-                        </div>
-                        <div>
-                            <strong>Quantity:</strong> {item.quantity}
-                            {/* Button to increase quantity */}
-                            <button onClick={() => onIncreaseQuantity(item.id)}>+</button>
-                            {/* Button to decrease quantity */}
-                            <button onClick={() => onDecreaseQuantity(item.id)}>-</button>
-                            {/* Button to remove item */}
-                            <button onClick={() => onRemoveItem(item.id)}>Remove</button>
-                            {/* Button to mark item as completed */}
-                            <button onClick={() => onCompleteItem(item.id, item.name)}>Complete</button>
-                        </div>
-                    </li>
-                ))}
-            </ul>
+        <div className='cards'>
+            {items.map((item) => (
+                <Card key={item.id} className="shopping-card">
+                    <h2>{item.name}</h2>
+                    <List>
+                        <section>
+                            <h3>Quantity: {item.quantity}</h3>
+                            <div className="increment-buttons">
+                                <Button variant="contained" onClick={() => onIncreaseQuantity(item.id)}>+</Button>
+                                <Button variant="contained" onClick={() => onDecreaseQuantity(item.id)}>-</Button>
+                            </div>
+                            <div className="status">
+                                <Button variant="contained" onClick={() => onRemoveItem(item.id)}>Remove</Button>
+                                <Button variant="contained" onClick={() => onCompleteItem(item.id, item.name)}>Complete</Button>
+                            </div>
+                        </section>
+                    </List>
+                </Card>
+            ))}
         </div>
     );
 };
