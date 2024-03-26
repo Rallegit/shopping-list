@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import './shopping-list-sidebar.scss';
@@ -9,6 +9,20 @@ interface ShoppingListSidebarProps {
 
 const ShoppingListSidebar: React.FC<ShoppingListSidebarProps> = ({ onAddItem }) => {
     const [item, setItem] = useState('');
+
+        useEffect(() => {
+            const handleKeyPress = (event: KeyboardEvent) => {
+                if (event.key === 'Enter' && item.trim() !== '') {
+                    onAddItem(item);
+                    setItem('');
+                }
+            };
+            document.addEventListener('keydown', handleKeyPress);
+            return () => {
+                document.removeEventListener('keydown', handleKeyPress);
+            };
+        }, [item, onAddItem]);
+    
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setItem(event.target.value);
