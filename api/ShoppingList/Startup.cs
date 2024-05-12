@@ -1,4 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using ShoppingList.Business.Processes.CreateShoppingItem;
+using ShoppingList.Data;
+using MediatR;
+using System.Reflection;
 
 namespace ShoppingList
 {
@@ -15,9 +20,9 @@ namespace ShoppingList
 
             public void ConfigureServices(IServiceCollection services)
             {
-                services.AddMediatR(typeof(Startup).Assembly, typeof().Assembly);
+                services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
                 services.AddControllersWithViews();
-                services.AddDbContext<>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                services.AddDbContext<ShoppingListContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             }
 
             public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

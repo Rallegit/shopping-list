@@ -8,18 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Processes\ArchiveShoppingItem\" />
-    <Folder Include="Processes\UpdateShoppingItem\" />
-    <Folder Include="Queries\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Refit" Version="7.0.0" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ShoppingList.Contract\ShoppingList.Contract.csproj" />
-    <ProjectReference Include="..\ShoppingList.Integration\ShoppingList.Integration.csproj" />
   </ItemGroup>
 
 </Project>
